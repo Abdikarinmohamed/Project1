@@ -1,0 +1,10 @@
+4
+
+/bin/ls F1 -l
+/bin/pwd
+echo Hello There
+echo Hello
+
+0 1
+0 2
+2 3
