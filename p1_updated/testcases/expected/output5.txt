@@ -1,0 +1,20 @@
+
+2201 2200 sleep 0.6 
+2200 2199 echo 6 
+2203 2202 sleep 0.9 
+2202 2199 echo 9 
+2226 2225 sleep 0.5 
+2225 2199 echo 5 
+2228 2227 sleep 0.2 
+2227 2199 echo 2 
+2243 2242 sleep 0.3 
+2242 2199 echo 3 
+2245 2244 sleep 0.4 
+2244 2199 echo 4 
+2247 2246 sleep 0.8 
+2246 2199 echo 8 
+2255 2254 sleep 0.1 
+2254 2199 echo 1 
+2257 2256 sleep 0.7 
+2256 2199 echo 7 
+2199 2198 echo sleep sort done 

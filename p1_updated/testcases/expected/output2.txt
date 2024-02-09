@@ -1,0 +1,5 @@
+
+1705 1704 echo Hello 
+1704 1703 /bin/pwd 
+1706 1703 echo Hello There 
+1703 1702 /usr/bin/whoami 

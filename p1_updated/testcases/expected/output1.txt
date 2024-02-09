@@ -1,0 +1,5 @@
+
+1474 1473 /bin/pwd 
+1476 1475 echo Hello 
+1475 1473 echo Hello There 
+1473 1472 /bin/ls F1 -l 
