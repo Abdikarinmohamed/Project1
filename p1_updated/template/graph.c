@@ -17,7 +17,7 @@ struct DepGraph* createDepGraph(FILE *input, char cmds[][550]){
 
     // First, let's read the number of nodes and all commands from the input file!
     // 1. Get the number of nodes using getline() and sscanf()
-        input = fopen("../testcases/input1.txt", "r");
+        // input = fopen("../testcases/input1.txt", "r"); no longer needed with input added in main.c
         if(input == NULL){
         perror("Failed to open file");
         return NULL;
