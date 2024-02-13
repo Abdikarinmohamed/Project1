@@ -5,7 +5,7 @@
 
 * **Test Machine**: CSELAB_KH1-25
 * **Date**: 02/15/24
-* **Team Memebers Name**: Abdirahman Abdi, Leban, Abdikarin Mohamed
+* **Team Memebers Name**: Abdirahman Abdi, Leban Abraham, Abdikarin Mohamed
 * **X500 IDs**:
 
 
