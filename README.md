@@ -26,8 +26,7 @@ Abdikarin:
 
 
 # How to compile the program:
-* To compile the program, navigate to the project directory and run the following command: ```make```
-* This will generate the executable file **depGraph** which can be run as shown in the Execution Format section.
+* To compile the program, navigate to the project directory and run the following command: ```make p_main``` This command tells make to execute the p_main rule, which will compile our source files into the executable named depGraph. After compiling, you can then run our program with: ```./depGraph ../testcases/input1.txt```
 
 
 
