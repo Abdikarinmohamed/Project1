@@ -1,7 +1,7 @@
 # Project1
 
 
-# test machine, date, team member names, and x500
+# Test machine, date, team member names, and x500
 
 * **Test Machine**: CSELAB_KH1-25
 * **Date**: 02/15/24
@@ -13,7 +13,10 @@
 # Your and your partners’ contributions
 
 Abdirahman Abdi:
-
+CreateDepGraph - Consolidated with Teammates and created a solution on how read in input.
+DFSVISIT - Added fucntionality for sequential and parellel mode
+ExecuteCommand - Created a function to take commands array and node, and break it into tokens so it can 
+    executed by execvp();
 
 
 Leban:
