@@ -14,12 +14,15 @@
 
 Abdirahman Abdi:
 CreateDepGraph - Consolidated with Teammates and created a solution on how read in input.
-DFSVISIT - Added fucntionality for sequential and parellel mode
+DFSVISIT - Added fucntionality for sequential and parallel mode
 ExecuteCommand - Created a function to take commands array and node, and break it into tokens so it can 
     executed by execvp();
 
 
-Leban:
+Leban Abraham:
+CreateDepGraph - Worked with teammates on single solution for graph creation
+DFSVisit - helped with sequential logic planning
+Worked on testcases and printing to file
 
 
 
