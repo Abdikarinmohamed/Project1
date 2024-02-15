@@ -19,10 +19,10 @@ int main(int argc, char **argv) {
 
 	// Uncomment the section below and complete the fopen arguments
 	 if (argc == 2) {
-	 	mode = 0;
+	 	mode = 0; //Dfs -> or ./depGraph ../testcases/input1.txt
 	 	input = fopen(argv[1], "r");
 	 } else if (argc ==3) {
-	 	mode = 1;
+	 	mode = 1; //parellel -> ./depGraph -p ../testcases/input1.txt
 	 	input = fopen(argv[2], "r");
 	 }
 
@@ -35,10 +35,12 @@ int main(int argc, char **argv) {
 
 	char cmds[32][550];
 	struct DepGraph *depGraph = createDepGraph(input, cmds);
-
-	fclose(input);
+	
+	
 
 	processGraph(depGraph, cmds, mode);
-
+	//free(depGraph); make a fucntion to do this.
+	fclose(input);
+	input = NULL;
 	return 0;
 }

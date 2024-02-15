@@ -46,22 +46,25 @@ struct DepGraph* createDepGraph(FILE *input, char cmds[][550]){
     // Now, let's move to Graph Creation!
     // Dynamically allocate the memory space to the DepGraph.
     // Then, initialize the value of V (Number of nodes), and Dynamically allocate the memory space to DepGraph's AdjList array
-     struct DepGraph* newGraph = (struct DepGraph*) malloc(sizeof(struct DepGraph));
+    struct DepGraph* newGraph = (struct DepGraph*) malloc(sizeof(struct DepGraph));
     if (newGraph == NULL) {
-    // Handle allocation failure
+        perror("Memory Allocation Failed for Graph");
+        exit(EXIT_FAILURE);
     }
-
     newGraph->V = numVertex;
-    //newGraph->array = malloc(numVertex * sizeof(struct AdjList)); //works without this
-    if (newGraph->array == NULL) {
-    // Handle allocation failure
-    }
+
     // Initialize each element in the DepGraph's AdjList array
     struct AdjList* adjLists = (struct AdjList*) malloc(numVertex * sizeof(struct AdjList));
+    if(adjLists == NULL){
+        perror("Memory Allocation Failed for AdjLists");
+        free(newGraph);
+        exit(EXIT_FAILURE);
+    }
     for (int i = 0; i < numVertex; i++) {
         adjLists[i].head = NULL; // Assuming the AdjList structure has a head pointer
     }
     newGraph->array = adjLists;//now points to the first adjList
+
     // Now, let's build edges to this DepGraph
     // Inside each loop iteration, use getline(), strtok(), and sscanf() to tokenize sources and destinations from the file.
     // Sources and destinations represent edges between commands. (please refer to figure 1 in project1.pdf)
@@ -80,9 +83,23 @@ struct DepGraph* createDepGraph(FILE *input, char cmds[][550]){
         }
     }
      free(line);
-     fclose(input);
+     //fclose(input); (Already Closed in main.c when function returns)
      line = NULL;
-     input = NULL;
+     
+    printf("Num nodes: %d\n", numVertex);
+    for (int i = 0; i < lineCount; i++) {
+        printf("%s\n", cmds[i]);
+    }
+
+    int i = 0;
+    for(int i = 0; i < numVertex; i++){
+        struct AdjListNode* currNode = newGraph->array[i].head;
+        while(currNode != NULL){
+            printf("Node %d: -> Node:%d\n", i, currNode->dest);
+            currNode = currNode->next;
+        }
+        //printf("\n");
+    }
 
     return newGraph; 
 }
@@ -133,7 +150,7 @@ void executeCommand(char cmds[][550], int node){
 // TODO: This function writes the DephGraph to the output file and executes the commands.
 // Please take a close look at the file structure on page 3, section 5, "Sample Output".
 void DFSVisit(struct DepGraph* graph, int node, char cmds[][550], int mode) {
-     // Use RECURSION to traverse the node in DepGraph's AdjList array, 
+    // Use RECURSION to traverse the node in DepGraph's AdjList array, 
     // so that the execution of child nodes happened before the parent node.
     // If the mode is sequential, wait child process to finish before moving on to the next node.
     // If the mode is parallel, move on to the next node.
@@ -143,12 +160,8 @@ void DFSVisit(struct DepGraph* graph, int node, char cmds[][550], int mode) {
    
 
     //pid_t pid = getpid();
-    pid_t parentPid = getppid();
-    FILE *resultsFile = fopen("results.txt", "a");
-    if(resultsFile == NULL){
-        perror("Error opening results.txt");
-        exit(EXIT_FAILURE);
-    }
+    //pid_t parentPid = getppid();
+    
     
    
     graph->array[node].visit = 1;
@@ -160,30 +173,30 @@ void DFSVisit(struct DepGraph* graph, int node, char cmds[][550], int mode) {
             //printf("Child PID: %d, Parent PID: %d\n", getpid(), getppid());
             //printf("Node: %d cmd: %s", currNode->dest, cmds[currNode->dest]);
             DFSVisit(graph, currNode->dest, cmds, mode);
+            FILE *resultsFile = fopen("results.txt", "a");
+            if(resultsFile == NULL){
+                perror("Error opening results.txt");
+                exit(EXIT_FAILURE);
+            }
             fprintf(resultsFile, "PID=%d, Parent PID=%d, Commands=%s\n", getpid(), getppid(), cmds[currNode->dest]);
             //write to file then close file  currNode->dest,
             fclose(resultsFile);
+            executeCommand(cmds, currNode->dest);
             _exit(0);
             
-        }else if(pid > 0){//parent
-            if(mode == 1){
-                wait(NULL);//wait for child process to finish
-                
-            }else{
-                while(wait(NULL) > 0);
+        } else if(pid > 0){//parent
+            if(mode == 0){//sequential mode
+                wait(NULL);//wait for child process to finish  
             }
-        }else{
+        } else {
             perror("Fork Failed");
             exit(1);
         }
         
         currNode = currNode->next;
-        /*if(mode == 1){
-            DFSVisit(graph, currNode->dest, cmds, mode);
-        }*/
-    }
+    }//end of while
 
-    if (mode != 1) {
+    if (mode == 1) {
         while (wait(NULL) > 0);
     }
 
@@ -192,18 +205,26 @@ void DFSVisit(struct DepGraph* graph, int node, char cmds[][550], int mode) {
    // Now all child processes have completed. The parent process can print its own details.
     // In sequential mode, this happens after waiting for all children.
     // In parallel mode, this happens after all children have been forked and waited on.
-    if (graph->array[node].head == NULL || mode == 1 || (mode != 1 && currNode == NULL)) { //
-        fprintf(resultsFile, "PID=%d, Parent PID=%d, Commands=%s\n", getpid(), getppid(), cmds[node]);
-        //system(cmds[node]);
-        //execvp(cmds[node][0], cmds[node]);
-        executeCommand(cmds, node);
-        // Note: Do not close the resultsFile here, as it will be used by other processes.
-        //if you do it will double print the parents
+   
+    if (mode == 0 || mode == 1 || graph->array[node].head == NULL) { //
+        FILE *resultsFile = fopen("results.txt", "a");
+        if(resultsFile != NULL){
+            fprintf(resultsFile, "PID=%d, Parent PID=%d, Commands=%s\n", getpid(), getppid(), cmds[node]);
+            fclose(resultsFile);
+            executeCommand(cmds, node);
+        }else{
+            perror("Error opening results.txt");
+            exit(EXIT_FAILURE);
+        }
+        
+            //fclose(resultsFile);
+            // Note: Do not close the resultsFile here, as it will be used by other processes.
+            //if you do it will double print the parents
         
     }
     
-    
 }
+
 
 
 
