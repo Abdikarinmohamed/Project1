@@ -86,20 +86,20 @@ struct DepGraph* createDepGraph(FILE *input, char cmds[][550]){
      //fclose(input); (Already Closed in main.c when function returns)
      line = NULL;
      
-    printf("Num nodes: %d\n", numVertex);
-    for (int i = 0; i < lineCount; i++) {
-        printf("%s\n", cmds[i]);
-    }
+    // printf("Num nodes: %d\n", numVertex);
+    // for (int i = 0; i < lineCount; i++) {
+    //     printf("%s\n", cmds[i]);
+    // }
 
-    int i = 0;
-    for(int i = 0; i < numVertex; i++){
-        struct AdjListNode* currNode = newGraph->array[i].head;
-        while(currNode != NULL){
-            printf("Node %d: -> Node:%d\n", i, currNode->dest);
-            currNode = currNode->next;
-        }
-        //printf("\n");
-    }
+    // int i = 0;
+    // for(int i = 0; i < numVertex; i++){
+    //     struct AdjListNode* currNode = newGraph->array[i].head;
+    //     while(currNode != NULL){
+    //         printf("Node %d: -> Node:%d\n", i, currNode->dest);
+    //         currNode = currNode->next;
+    //     }
+    //     //printf("\n");
+    // }
 
     return newGraph; 
 }
@@ -178,7 +178,8 @@ void DFSVisit(struct DepGraph* graph, int node, char cmds[][550], int mode) {
                 perror("Error opening results.txt");
                 exit(EXIT_FAILURE);
             }
-            fprintf(resultsFile, "PID=%d, Parent PID=%d, Commands=%s\n", getpid(), getppid(), cmds[currNode->dest]);
+            // fprintf(resultsFile, "PID=%d, Parent PID=%d, Commands=%s\n", getpid(), getppid(), cmds[currNode->dest]);
+	    fprintf(resultsFile, "%d %d %s\n", getpid(), getppid(), cmds[currNode->dest]);
             //write to file then close file  currNode->dest,
             fclose(resultsFile);
             executeCommand(cmds, currNode->dest);
@@ -209,7 +210,8 @@ void DFSVisit(struct DepGraph* graph, int node, char cmds[][550], int mode) {
     if (mode == 0 || mode == 1 || graph->array[node].head == NULL) { //
         FILE *resultsFile = fopen("results.txt", "a");
         if(resultsFile != NULL){
-            fprintf(resultsFile, "PID=%d, Parent PID=%d, Commands=%s\n", getpid(), getppid(), cmds[node]);
+            // fprintf(resultsFile, "PID=%d, Parent PID=%d, Commands=%s\n", getpid(), getppid(), cmds[node]);
+	    fprintf(resultsFile, "%d %d %s\n", getpid(), getppid(), cmds[node]);
             fclose(resultsFile);
             executeCommand(cmds, node);
         }else{
